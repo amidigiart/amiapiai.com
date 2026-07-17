@@ -149,6 +149,11 @@ footer{padding:48px 0 32px;border-top:1px solid var(--border);margin-top:80px}
   nav{padding:12px 0}
   .code-preview{font-size:.72rem;padding:16px}
 }
+
+.lang-toggle{display:flex;gap:.3rem;justify-content:center;margin-top:.8rem}
+.lang-toggle button{background:var(--surface);border:1px solid var(--border);color:var(--text2);padding:.25rem .7rem;border-radius:6px;cursor:pointer;font-size:.78rem;font-weight:600;transition:all .2s}
+.lang-toggle button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+[data-i18n]{transition:opacity .15s}
 </style>
 </head>
 <body>
@@ -327,7 +332,7 @@ footer{padding:48px 0 32px;border-top:1px solid var(--border);margin-top:80px}
           </div>
         </div>
         <div class="chat-input-row">
-          <input type="text" id="chatInput" placeholder="Document my endpoint..., Debug this 500..., Design a schema for..." maxlength="4000" autocomplete="off">
+          <input type="text" id="chatInput" placeholder="Document my endpoint..., Debug this 500..., Design a schema for..." data-i18n="placeholder" maxlength="4000" autocomplete="off">
           <button class="btn btn-primary" id="chatSendBtn" onclick="sendChat()">→</button>
         </div>
         <p class="chat-status" id="chatStatus"></p>
@@ -379,6 +384,29 @@ async function sendChat(){if(chatBusy)return;const input=document.getElementById
 document.getElementById('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat()}});
 async function handleProPurchase(){const btn=document.getElementById('proBuyBtn');btn.textContent='Redirecting to Stripe...';btn.disabled=true;try{const res=await fetch(API_BASE+'/create-checkout-session',{method:'POST',headers:{'Content-Type':'application/json'}});const data=await res.json();if(data.url)window.location.href=data.url;else throw new Error('No URL')}catch(e){btn.textContent='Upgrade to Pro';btn.disabled=false;alert('Payment system is being configured. Contact hello@amiapiai.com')}}
 (function(){const p=new URLSearchParams(window.location.search);if(p.get('payment')==='success'){localStorage.setItem(PRO_KEY,'active');history.replaceState({},'',window.location.pathname);setTimeout(()=>addBubble('🎉 Welcome to Pro! Unlimited API analysis unlocked.','bot','✨ pro'),500)}if(p.get('payment')==='cancelled')history.replaceState({},'',window.location.pathname);updateLimitDisplay()})();
+
+
+// i18n
+const T = {"tagline": {"en": "AI API Documentation & Testing Companion — dual-engine verified", "ro": "Companion AI Documentație & Testare API — verificat cu motor dual"}, "card1_h": {"en": "API Docs", "ro": "Documentație API"}, "card1_p": {"en": "Generate OpenAPI specs, endpoint docs, and schema designs", "ro": "Generează specificații OpenAPI, documentații endpoint și design-uri de schemă"}, "card2_h": {"en": "Debug & Test", "ro": "Depanare & Testare"}, "card2_p": {"en": "Response debugging, test planning, and error analysis", "ro": "Depanare răspunsuri, planificare teste și analiză erori"}, "card3_h": {"en": "Security Review", "ro": "Revizuire Securitate"}, "card3_p": {"en": "OWASP API Top 10, authentication patterns, rate limiting", "ro": "OWASP API Top 10, tipare de autentificare, limitare rată"}, "chat_h2": {"en": "Ask about APIs", "ro": "Întreabă despre API-uri"}, "sys_msg": {"en": "amiApiAI — dual-engine verified API companion. 5 free questions/day.", "ro": "amiApiAI — companion API verificat dual-engine. 5 întrebări gratuite/zi."}, "placeholder": {"en": "e.g. Design a REST API for a todo app", "ro": "ex. Proiectează un REST API pentru o aplicație todo"}, "send": {"en": "Send", "ro": "Trimite"}, "free_note": {"en": "Free: 5 questions/day", "ro": "Gratuit: 5 întrebări/zi"}, "pro": {"en": "Pro:", "ro": "Pro:"}, "unlimited": {"en": "unlimited", "ro": "nelimitat"}, "upgrade": {"en": "Upgrade to Pro — €9.99/mo", "ro": "Upgrade la Pro — €9.99/lună"}, "feat_h2": {"en": "What amiApiAI can help with", "ro": "Cum te poate ajuta amiApiAI"}, "compliance_p": {"en": "Regulation-aware AI", "ro": "AI conform cu legislația"}, "footer_disc": {"en": "amiApiAI is an AI tool for API developers — not a substitute for professional security audit.", "ro": "amiApiAI este un instrument AI pentru dezvoltatori API — nu înlocuiește un audit profesional de securitate."}};
+let currentLang = localStorage.getItem('amiapiai_lang') || 'en';
+
+function switchLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('amiapiai_lang', lang);
+  document.getElementById('langEn').classList.toggle('active', lang === 'en');
+  document.getElementById('langRo').classList.toggle('active', lang === 'ro');
+  document.documentElement.lang = lang === 'ro' ? 'ro' : 'en';
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (T[key] && T[key][lang]) {
+      if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') el.placeholder = T[key][lang];
+      else el.textContent = T[key][lang];
+    }
+  });
+}
+
+// Apply saved language on load
+document.addEventListener('DOMContentLoaded', () => { if (currentLang !== 'en') switchLang(currentLang); });
 </script>
 </body>
 </html>
