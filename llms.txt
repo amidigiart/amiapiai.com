@@ -1,0 +1,27 @@
+# amiApiAI
+> AI API Documentation & Testing Companion — dual-engine verified
+
+## What is amiApiAI?
+amiApiAI is a dual-engine AI companion for API developers. Two AI models (Grok + DeepSeek) cross-verify every answer — documentation, debugging, schema design, and test planning you can ship with confidence.
+
+## Features
+- OpenAPI/Swagger documentation generation
+- Response debugging and error analysis
+- REST/GraphQL/gRPC schema design
+- Test suite planning (happy path, edge cases, security)
+- API security review (OWASP API Top 10)
+- Performance optimization advice
+
+## Architecture
+- Dual-engine: Grok 4.5 (xAI) + DeepSeek
+- Anti-confabulation: trigram-cosine concordance >= 0.45 required
+- Stateless: code processed in real-time, never stored
+
+## Compliance
+- EU AI Act (Reg. 2024/1689) Art. 50 — limited-risk, full transparency
+- GDPR (Reg. 2016/679) — minimal data, no code storage
+
+## Links
+- Website: https://amiapiai.com
+- API: https://amiapiai-api-production.up.railway.app
+- Contact: hello@amiapiai.com
